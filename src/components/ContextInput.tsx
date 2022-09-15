@@ -16,6 +16,7 @@ const ContextInput = () => {
         .filter((value) => typeof value === "string")
         .reverse() as string[];
 
+    // scroll to bottom when necessary
     useEffect(() => {
         window.scrollTo({
             left: 0,
