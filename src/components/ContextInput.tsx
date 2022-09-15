@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useEvalCode from "../hooks/useEvalCode";
 
 import useStore from "../hooks/useStore";
@@ -16,31 +16,68 @@ const ContextInput = () => {
         .filter((value) => typeof value === "string")
         .reverse() as string[];
 
+    useEffect(() => {
+        window.scrollTo({
+            left: 0,
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+        });
+    }, [context]);
+
     return (
         <div className="flex gap-2 mt-2">
             <Chevron />
             <textarea
                 className="w-full overflow-y-hidden outline-none border-none bg-inherit resize-none"
                 onInput={(e) => {
-                    const input = e.target as HTMLTextAreaElement;
+                    const textarea = e.target as HTMLTextAreaElement;
 
                     setHistoryIndex(-1);
-                    setCode(input.value);
-                    input.style.height = "1px";
-                    input.style.height = `${input.scrollHeight}px`;
+                    setCode(textarea.value);
+
+                    // adjust textarea to fit content
+                    textarea.style.height = "1px";
+                    textarea.style.height = `${textarea.scrollHeight}px`;
                 }}
                 onKeyDown={async (e) => {
+                    const textarea = e.target as HTMLTextAreaElement;
+
                     // manage history
-                    if (e.key === "ArrowUp") {
-                        const newHistoryIndex = historyIndex + 1;
+                    if (code.trim() === "") {
+                        if (e.key === "ArrowUp") {
+                            const newHistoryIndex = historyIndex + 1;
 
-                        setHistoryIndex(newHistoryIndex);
-                        setCode(history[newHistoryIndex]);
-                    } else if (e.key === "ArrowDown") {
-                        const newHistoryIndex = historyIndex - 1;
+                            setHistoryIndex(newHistoryIndex);
+                            setCode(history[newHistoryIndex]);
+                        } else if (e.key === "ArrowDown") {
+                            const newHistoryIndex = historyIndex - 1;
 
-                        setHistoryIndex(newHistoryIndex);
-                        setCode(history[newHistoryIndex]);
+                            setHistoryIndex(newHistoryIndex);
+                            setCode(history[newHistoryIndex]);
+                        }
+                    }
+
+                    // manage tabs
+                    if (e.key == "Tab") {
+                        e.preventDefault();
+
+                        const start = textarea.selectionStart;
+                        const end = textarea.selectionEnd;
+                        const tab = "    ";
+
+                        // insert spaces & adjust cursor
+                        const newCode =
+                            code.substring(0, start) +
+                            tab +
+                            code.substring(end);
+
+                        textarea.value = newCode;
+                        textarea.setSelectionRange(
+                            start + tab.length,
+                            start + tab.length
+                        );
+
+                        setCode(newCode);
                     }
 
                     // commit & evaluate code
@@ -53,6 +90,7 @@ const ContextInput = () => {
                             result && store.context.push(result);
                         });
 
+                        // reset code
                         setCode("");
                     }
                 }}
