@@ -44,7 +44,7 @@ const ContextInput = () => {
                     const textarea = e.target as HTMLTextAreaElement;
 
                     // manage history
-                    if (code.trim() === "") {
+                    if (code.trim() === "" || history.includes(code)) {
                         if (e.key === "ArrowUp") {
                             const newHistoryIndex = historyIndex + 1;
 
@@ -88,9 +88,12 @@ const ContextInput = () => {
                         const codeCache = code;
                         setCode("");
 
-                        const result = await evalCode(codeCache);
                         set((store) => {
                             store.context.push(codeCache);
+                        });
+
+                        const result = await evalCode(codeCache);
+                        set((store) => {
                             result && store.context.push(result);
                         });
                     }
