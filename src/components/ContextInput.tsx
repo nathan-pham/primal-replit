@@ -85,14 +85,14 @@ const ContextInput = () => {
                     else if (!e.shiftKey && e.key === "Enter") {
                         e.preventDefault();
 
-                        const result = await evalCode(code);
+                        const codeCache = code;
+                        setCode("");
+
+                        const result = await evalCode(codeCache);
                         set((store) => {
-                            store.context.push(code);
+                            store.context.push(codeCache);
                             result && store.context.push(result);
                         });
-
-                        // reset code
-                        setCode("");
                     }
                 }}
                 value={code}
