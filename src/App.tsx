@@ -1,13 +1,13 @@
 import AppWrapper from "./components/AppWrapper";
 
-import Input from "./components/Input";
+import ContextInput from "./components/ContextInput";
 import Context from "./components/Context";
 
 const App = () => {
     return (
         <AppWrapper>
             <Context />
-            <Input />
+            <ContextInput />
         </AppWrapper>
     );
 };

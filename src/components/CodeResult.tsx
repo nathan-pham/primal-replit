@@ -44,6 +44,9 @@ const CodeResult = ({ value, id = "0", defaultOpen }: CodeResultProps) => {
                 <ResultArray object={value} id={id} defaultOpen={defaultOpen} />
             );
 
+        case "directive":
+            return <pre className="text-white">{root.value}</pre>;
+
         default:
             return (
                 <span className="text-yellow-500">{root.value.toString()}</span>

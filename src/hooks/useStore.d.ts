@@ -1,6 +1,8 @@
 export interface Store {
     set: (fn: (state: Store) => void) => void;
     contextId: string;
+    resetContextId: () => void;
+
     context: (string | Store["result"])[];
     result: Record<string, Types>;
 }
@@ -20,4 +22,5 @@ export type Types =
     | { type: "null"; value: "" }
     | { type: "string"; value: string }
     | { type: "number"; value: number }
-    | { type: "boolean"; value: bolean };
+    | { type: "boolean"; value: bolean }
+    | { type: "directive"; value: string }; // custom directive datatype

@@ -1,15 +1,20 @@
 import { useState } from "react";
-import { REPL_API } from "../config";
 import useEvalCode from "../hooks/useEvalCode";
 
 import useStore from "../hooks/useStore";
-import { Store } from "../hooks/useStore.d";
 import Chevron from "./Chevron";
 
-const Input = () => {
+const ContextInput = () => {
     const [code, setCode] = useState("");
-    const [set, contextId] = useStore((state) => [state.set, state.contextId]);
-    const { evalCode } = useEvalCode(contextId);
+    const [set, context] = useStore((state) => [state.set, state.context]);
+
+    const { evalCode } = useEvalCode();
+
+    // manage history
+    const [historyIndex, setHistoryIndex] = useState(-1);
+    const history = context
+        .filter((value) => typeof value === "string")
+        .reverse() as string[];
 
     return (
         <div className="flex gap-2 mt-2">
@@ -19,22 +24,35 @@ const Input = () => {
                 onInput={(e) => {
                     const input = e.target as HTMLTextAreaElement;
 
+                    setHistoryIndex(-1);
                     setCode(input.value);
                     input.style.height = "1px";
                     input.style.height = `${input.scrollHeight}px`;
                 }}
                 onKeyDown={async (e) => {
-                    if (!e.shiftKey && e.key === "Enter") {
+                    // manage history
+                    if (e.key === "ArrowUp") {
+                        const newHistoryIndex = historyIndex + 1;
+
+                        setHistoryIndex(newHistoryIndex);
+                        setCode(history[newHistoryIndex]);
+                    } else if (e.key === "ArrowDown") {
+                        const newHistoryIndex = historyIndex - 1;
+
+                        setHistoryIndex(newHistoryIndex);
+                        setCode(history[newHistoryIndex]);
+                    }
+
+                    // commit & evaluate code
+                    else if (!e.shiftKey && e.key === "Enter") {
                         e.preventDefault();
 
                         const result = await evalCode(code);
-
                         set((store) => {
                             store.context.push(code);
-                            store.context.push(result);
+                            result && store.context.push(result);
                         });
 
-                        console.log(JSON.stringify(result, null, 4));
                         setCode("");
                     }
                 }}
@@ -46,4 +64,4 @@ const Input = () => {
     );
 };
 
-export default Input;
+export default ContextInput;

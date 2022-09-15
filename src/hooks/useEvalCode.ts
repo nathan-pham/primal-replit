@@ -1,8 +1,20 @@
 import { REPL_API } from "../config";
-import { Store, Types } from "./useStore.d";
+import useStore from "./useStore";
+import { Store } from "./useStore.d";
+import customBlock from "../utils/customBlock";
+import useDirectives from "./useDirectives";
 
-const useEvalCode = (contextId: string) => {
+const useEvalCode = () => {
+    const contextId = useStore((state) => state.contextId);
+    const { evalDirective } = useDirectives();
+
     const evalCode = async (code: string) => {
+        // manage directives
+        if (code.startsWith(".")) {
+            return evalDirective(code.slice(1));
+        }
+
+        // send request
         const res = await fetch(REPL_API, {
             method: "POST",
             headers: {
@@ -18,12 +30,7 @@ const useEvalCode = (contextId: string) => {
             return (await res.json()).result as Store["result"];
         }
 
-        return {
-            "0": {
-                type: "error",
-                value: await res.text(),
-            },
-        } as Store["result"];
+        return customBlock("error", await res.text());
     };
 
     return {
