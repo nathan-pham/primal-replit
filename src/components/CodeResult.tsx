@@ -1,4 +1,5 @@
 import { Store } from "../hooks/useStore.d";
+import ResultArray from "./results/ResultArray";
 import ResultObject from "./results/ResultObject";
 
 interface CodeResultProps {
@@ -15,6 +16,18 @@ const CodeResult = ({ value, id = "0", defaultOpen }: CodeResultProps) => {
         case "null":
             return <span className="text-gray-500">{root.type}</span>;
 
+        case "string":
+            return (
+                <span
+                    className={`text-green-500 before:content-["'"] after:content-["'"]`}
+                >
+                    {root.value}
+                </span>
+            );
+
+        case "error":
+            return <span className="text-red-500">{root.value}</span>;
+
         case "object":
             return (
                 <>
@@ -26,8 +39,15 @@ const CodeResult = ({ value, id = "0", defaultOpen }: CodeResultProps) => {
                 </>
             );
 
+        case "array":
+            return (
+                <ResultArray object={value} id={id} defaultOpen={defaultOpen} />
+            );
+
         default:
-            return <span>{JSON.stringify(root.value)}</span>;
+            return (
+                <span className="text-yellow-500">{root.value.toString()}</span>
+            );
     }
 };
 

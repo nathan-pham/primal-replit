@@ -15,14 +15,7 @@ export type Types =
           type: "array";
           value: Array<ID>;
       }
-    | {
-          type: "error";
-          value: {
-              name: string;
-              message: string;
-              stack?: string;
-          };
-      }
+    | { type: "error"; value: string } // server did not include other props like stack
     | { type: "undefined"; value: "" }
     | { type: "null"; value: "" }
     | { type: "string"; value: string }
