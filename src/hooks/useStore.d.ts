@@ -24,6 +24,7 @@ export type Types =
           };
       }
     | { type: "undefined"; value: "" }
+    | { type: "null"; value: "" }
     | { type: "string"; value: string }
     | { type: "number"; value: number }
     | { type: "boolean"; value: bolean };

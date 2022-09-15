@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Store, Types } from "../../hooks/useStore.d";
+import { Store } from "../../hooks/useStore.d";
 import CodeResult from "../CodeResult";
 
 interface ResultObjectProps {

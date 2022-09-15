@@ -1,5 +1,4 @@
-import { useState, ReactNode } from "react";
-import { Store, Types } from "../hooks/useStore.d";
+import { Store } from "../hooks/useStore.d";
 import ResultObject from "./results/ResultObject";
 
 interface CodeResultProps {
@@ -13,7 +12,8 @@ const CodeResult = ({ value, id = "0", defaultOpen }: CodeResultProps) => {
 
     switch (root.type) {
         case "undefined":
-            return <p>undefined</p>;
+        case "null":
+            return <span className="text-gray-500">{root.type}</span>;
 
         case "object":
             return (

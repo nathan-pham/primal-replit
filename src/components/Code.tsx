@@ -1,4 +1,4 @@
-import { IoChevronForwardOutline } from "react-icons/io5";
+import Chevron from "./Chevron";
 
 interface CodeProps {
     value: string;
@@ -6,10 +6,8 @@ interface CodeProps {
 
 const Code = ({ value }: CodeProps) => {
     return (
-        <div className="flex gap-1 items-center">
-            <div>
-                <IoChevronForwardOutline />
-            </div>
+        <div className="flex gap-2 mt-2">
+            <Chevron />
             <code>
                 <pre>{value}</pre>
             </code>
